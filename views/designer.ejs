@@ -1,0 +1,209 @@
+<%- include('partials/header1') %>
+<%- include('partials/navbar1') %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-7 bg-light" id="canvas-container" style="height: 90vh; position: relative;">
+            <div class="position-absolute top-0 start-0 p-3" style="z-index: 10;">
+                <div class="btn-group-vertical shadow-sm">
+                    <button type="button" id="btnRotation" class="btn btn-light btn-sm"><i class="bi bi-pause-fill"></i> Spin</button>
+                    <button type="button" id="btnZoom" class="btn btn-light btn-sm"><i class="bi bi-search"></i> Zoom</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 p-4 bg-white shadow-lg" style="height: 90vh; overflow-y: auto;">
+            <h4 class="fw-bold mb-3" style="color:#23086f">Candle Configurator</h4>
+            <form action="/save-order" method="POST" id="candleForm">
+                
+                <div class="mb-3">
+                    <label class="fw-bold">Candle Size</label>
+                    <select name="size" id="sizeSelector" class="form-select border-primary">
+                        <option value="small">Small (10cm)</option>
+                        <option value="medium" selected>Medium (15cm)</option>
+                        <option value="large">Large (20cm)</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Recipient Name(s)</label>
+                        <input type="text" id="recipientName" name="recipientName" class="form-control" placeholder="e.g. Marina Jean" required>
+                        <small class="text-muted">Two names will split into 2 lines automatically.</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Occasion</label>
+                        <select name="occasion" id="occasion" class="form-select">
+                            <option>THE BAPTISM OF</option>
+                            <option>THE WEDDING OF</option>
+                            <option>FIRST HOLY COMMUNION</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Design Color</label>
+                        <input type="color" id="designColor" name="colour" class="form-control form-control-color w-100" value="#D4AF37">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Font Style</label>
+                        <select name="font" id="fontStyle" class="form-select">
+                            <option value="Cursive">Elegant Script</option>
+                            <option value="Serif">Classic Serif</option>
+                            <option value="Great">Great Vibes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Cross Style</label>
+                        <select name="cross" id="crossStyle" class="form-select">
+                            <option value="†">Latin Cross</option>
+                            <option value="☩">Ornate Cross</option>
+                            <option value="none">No Cross</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Ribbon Color</label>
+                        <select name="ribbon" id="ribbonColor" class="form-select">
+                            <option value="#D4AF37">Gold Silk</option>
+                            <option value="#ADD8E6">Soft Blue</option>
+                            <option value="#FFC0CB">Soft Pink</option>
+                            <option value="#ffffff">White Satin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Event Date</label>
+                        <input type="date" id="eventDate" name="date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Location</label>
+                        <input type="text" id="eventLocation" name="location" class="form-control" placeholder="City, Country">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Extra Prayer / Message</label>
+                    <textarea name="prayer" id="extraMessage" class="form-control" rows="2" placeholder="Enter message..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100 py-3 fw-bold text-white">SUBMIT DESIGN</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<canvas id="textureCanvas" width="512" height="512" style="display:none;"></canvas>
+
+<script>
+    var isRotating = true, isZoomed = false;
+    var container = document.getElementById('canvas-container');
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf1f1f1);
+
+    var camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 0.5, 6);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+    var pLight = new THREE.PointLight(0xffffff, 0.5);
+    pLight.position.set(5, 5, 5);
+    scene.add(pLight);
+
+    var candleGroup = new THREE.Group();
+    scene.add(candleGroup);
+
+    var candle = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 3, 64), new THREE.MeshPhongMaterial({ color: 0xffffff }));
+    candleGroup.add(candle);
+
+    var ribbon = new THREE.Mesh(new THREE.CylinderGeometry(1.02, 1.02, 0.3, 64), new THREE.MeshPhongMaterial({ color: 0xD4AF37 }));
+    ribbon.position.y = -1.3;
+    candleGroup.add(ribbon);
+
+    var canvas = document.getElementById('textureCanvas');
+    var ctx = canvas.getContext('2d');
+    var texture = new THREE.CanvasTexture(canvas);
+    var label = new THREE.Mesh(new THREE.CylinderGeometry(1.01, 1.01, 2.9, 64, 1, true), new THREE.MeshPhongMaterial({ map: texture, transparent: true }));
+    label.rotation.y = Math.PI; 
+    candleGroup.add(label);
+
+    function updatePreview() {
+        var size = document.getElementById('sizeSelector').value;
+        if(size === 'small') candleGroup.scale.set(0.8, 0.7, 0.8);
+        else if(size === 'large') candleGroup.scale.set(1.1, 1.3, 1.1);
+        else candleGroup.scale.set(1, 1, 1);
+
+        var fullName = document.getElementById('recipientName').value || "";
+        var occasion = document.getElementById('occasion').value;
+        var color = document.getElementById('designColor').value;
+        var font = document.getElementById('fontStyle').value;
+        var cross = document.getElementById('crossStyle').value;
+        var loc = document.getElementById('eventLocation').value || "";
+        var dateVal = document.getElementById('eventDate').value;
+        var msg = document.getElementById('extraMessage').value || "";
+
+        var displayDate = dateVal ? new Date(dateVal).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : "";
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "center";
+        ctx.fillStyle = color;
+
+        var maxW = 340; // Horizontal Safety Margin (0.5 inch space)
+
+        // 1. Cross
+        if(cross !== 'none') { ctx.font = "70px Arial"; ctx.fillText(cross, 256, 70); }
+        
+        // 2. Occasion
+        ctx.font = "20px Arial";
+        ctx.fillText(occasion, 256, 120, maxW);
+        
+        // 3. Name Splitting Logic (Multi-line)
+        ctx.font = "italic 48px " + font;
+        var nameParts = fullName.trim().split(/\s+/);
+        
+        if (nameParts.length >= 2) {
+            // Draws first name on line 1, second/surname on line 2
+            ctx.fillText(nameParts[0], 256, 190, maxW);
+            ctx.fillText(nameParts.slice(1).join(" "), 256, 245, maxW);
+        } else {
+            // Single name stays in the middle
+            ctx.fillText(fullName, 256, 220, maxW);
+        }
+
+        // 4. Details (Date & Location)
+        ctx.font = "18px " + font;
+        var detailY = nameParts.length >= 2 ? 300 : 280;
+        ctx.fillText(loc, 256, detailY, maxW);
+        ctx.fillText(displayDate, 256, detailY + 30, maxW);
+
+        // 5. Message
+        ctx.font = "16px Arial";
+        ctx.fillText(msg, 256, 420, maxW);
+
+        texture.needsUpdate = true;
+    }
+
+    document.getElementById('candleForm').addEventListener('input', updatePreview);
+    document.getElementById('ribbonColor').addEventListener('input', (e) => ribbon.material.color.set(e.target.value));
+    document.getElementById('btnRotation').addEventListener('click', function() { isRotating = !isRotating; });
+    document.getElementById('btnZoom').addEventListener('click', function() { isZoomed = !isZoomed; camera.position.z = isZoomed ? 3.5 : 6; });
+
+    updatePreview();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if(isRotating) candleGroup.rotation.y += 0.003;
+        renderer.render(scene, camera);
+    }
+    animate();
+</script>
+
+<%- include('partials/footer1') %>

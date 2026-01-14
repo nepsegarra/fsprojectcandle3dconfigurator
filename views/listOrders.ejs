@@ -1,0 +1,98 @@
+<%- include('partials/header1') %>
+<%- include('partials/navbar1') %>
+
+<div class="container-fluid mt-5 px-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-dark">Customer Order Management</h2>
+            <p class="text-muted">Review and process custom candle designs from The Square Gift Store.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body py-2">
+                    <h5 class="mb-0">Total Orders: <%= orders.length %></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Recipient</th>
+                            <th>Occasion</th>
+                            <th>Design Details</th>
+                            <th>Location & Date</th>
+                            <th>Extra Prayer</th>
+                            <th>Delivery</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(orders.length > 0) { %>
+                            <% orders.forEach(function(order) { %>
+                                <tr>
+                                    <td><strong><%= order.id %></strong></td>
+                                    <td>
+                                        <small class="text-primary d-block"><%= order.user_email %></small>
+                                        <small class="text-muted"><%= new Date(order.created_at).toLocaleDateString() %></small>
+                                    </td>
+                                    <td class="fw-bold"><%= order.recipient_name %></td>
+                                    <td><span class="badge bg-info text-dark"><%= order.occasion %></span></td>
+                                    <td>
+                                        <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+                                            <li><strong>Size:</strong> <%= order.size %></li>
+                                            <li><strong>Font:</strong> <%= order.font_style %></li>
+                                            <li><strong>Cross:</strong> <%= order.cross_type %></li>
+                                            <li><strong>Ribbon:</strong> <%= order.ribbon_type %></li>
+                                            <li>
+                                                <strong>Color:</strong> 
+                                                <span class="color-preview" style="--bg-color: <%= order.design_colour %>;"></span>
+                                                <%= order.design_colour %>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <small class="d-block"><strong>Place:</strong> <%= order.location %></small>
+                                        <small class="d-block"><strong>Event:</strong> <%= new Date(order.event_date).toDateString() %></small>
+                                    </td>
+                                    <td>
+                                        <div style="max-width: 150px; font-size: 0.8rem; font-style: italic;">
+                                            "<%= order.extra_prayer %>"
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge <%= order.delivery_method === 'Ship' ? 'bg-secondary' : 'bg-primary' %>">
+                                            <%= order.delivery_method %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm border-warning">
+                                            <option>Pending</option>
+                                            <option>In Progress</option>
+                                            <option>Completed</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="9" class="text-center py-5">
+                                    <h5 class="text-muted">No orders found in the database.</h5>
+                                    <a href="/" class="btn btn-warning btn-sm mt-2">Go to Designer</a>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer1') %>

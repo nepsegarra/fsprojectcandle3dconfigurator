@@ -1,0 +1,55 @@
+<%- include('partials/header1') %>
+<%- include('partials/navbar1') %>
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <img src="/public/images/tsgslogo.jpg" alt="The Square Gift Store Logo" style="width: 130px; border-radius: 70%;">
+    </div>
+
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-5 mb-4">
+            <img src="/public/images/candlepichome.png" class="img-fluid rounded shadow-lg" alt="Personalised Candles">
+        </div>
+
+        <div class="col-md-5">
+            <div class="ps-md-4">
+                <p class="fw-bold">Beautiful Personalised Candles for Any Occasion</p>
+                <p style="color:#23086f">
+                    We make personalised candles for any occasion. We can include a name, occasion, location, image, cross, ribbon and more.
+                </p>
+
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body p-4 bg-light rounded">
+                        <form action="/login-user" method="POST">
+                            <div class="mb-3">
+                                <label class="small fw-bold">Email Address</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="small fw-bold">Password</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 fw-bold text-white">LOGIN TO DESIGN</button>
+
+                    <div class="text-center">
+                        <div class="d-flex align-items-center my-3">
+                            <hr class="flex-grow-1">
+                            <span class="mx-2 text-muted small">OR</span>
+                            <hr class="flex-grow-1">
+                        </div>
+                        <a href="/guest-login" class="btn btn-outline-secondary w-100 py-2">
+                            CONTINUE AS GUEST
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <p class="mb-0">New to the store?</p>
+                        <a href="/register" class="text-decoration-none fw-bold" style="color:#23086f">Create an Account Here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer1') %>

@@ -1,0 +1,13 @@
+body { font-family: 'Segoe UI', sans-serif; }
+.bg-light { background-color: #f4f4f4 !important; }
+.btn-warning { background-color: #d4af37; color: white; border: none; }
+.btn-warning:hover { background-color: #b8962e; color: white; }
+.form-control:focus { border-color: #d4af37; box-shadow: none; }
+
+.color-preview {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: var(--bg-color);
+    border: 1px solid #ccc;
+}

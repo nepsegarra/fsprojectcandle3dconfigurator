@@ -1,0 +1,49 @@
+<%- include('partials/header1') %>
+<%- include('partials/navbar1') %>
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <img src="/public/images/tsgslogo.jpg" alt="Logo" style="width: 130px; border-radius: 70%;">
+    </div>
+
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-5 d-none d-md-block">
+             <img src="/public/images/candlepichome.png" class="img-fluid rounded shadow" alt="Candles">
+             <div class="mt-3 text-center">
+                 <p class="fw-bold" style="color:#23086f">Hand-crafted with love.</p>
+             </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow border-0">
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-3">Create Account</h3>
+                    <p class="small" style="color:#23086f">Join us to start personalising your sacred candles.</p>
+                    
+                    <form action="/register-user" method="POST">
+                        <div class="mb-2">
+                            <label class="small">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="small">Mobile</label>
+                            <input type="text" name="mobile" class="form-control" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="small">Address</label>
+                            <textarea name="address" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold text-white">REGISTER</button>
+                    </form>
+                    <p class="mt-3 text-center small">Already have an account? <a href="/login">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer1') %>
