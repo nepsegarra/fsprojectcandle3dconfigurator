@@ -2,10 +2,8 @@ var express = require('express');
 var app = express();
 var session = require('express-session');
 var conn = require('./dbConfig');
-// var bcrypt = require('bcrypt');
-// var multer = require('multer');
 var path = require('path');
-
+// var bcrypt = require('bcrypt');
 
 app.set('view engine','ejs');
 app.use('/public', express.static('public')) ;
