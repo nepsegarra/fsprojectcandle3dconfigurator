@@ -54,7 +54,7 @@ app.get('/register', function(req, res) {
 
 
 
-// Registration Logic
+// Registration
 app.post('/register-user', function(req, res) {
     var email = req.body.email;
     var mobile = req.body.mobile;
@@ -69,7 +69,7 @@ app.post('/register-user', function(req, res) {
 });
 
 
-// Login Logic
+// Login
 app.post('/login-user', function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
@@ -86,7 +86,7 @@ app.post('/login-user', function(req, res) {
     });
 });
 
-// Save Order Logic (11 Fields)
+// Save Order (11 Fields)
 app.post('/save-order', function(req, res) {
     var email = req.session.userEmail || 'Guest';
     var d = req.body;
@@ -102,7 +102,7 @@ app.post('/save-order', function(req, res) {
     });
 });
 
-// Admin Route: List Orders
+// Admin: List Orders
 app.get('/list-orders', function(req, res) {
     var sql = "SELECT * FROM orders ORDER BY created_at DESC";
     conn.query(sql, function(err, results) {
