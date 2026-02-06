@@ -52,7 +52,19 @@ app.get('/register', function(req, res) {
   res.render('register.ejs', { user: req.session.userEmail });
 });
 
+// Admin: List Orders
+app.get('/list-orders', function(req, res) {
+    var sql = "SELECT * FROM orders ORDER BY created_at DESC";
+    conn.query(sql, function(err, results) {
+        if (err) throw err;
+        res.render('listOrders', { orders: results, user: req.session.userEmail });
+    });
+});
 
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/')
+    });
 
 // Registration
 app.post('/register-user', function(req, res) {
@@ -102,19 +114,7 @@ app.post('/save-order', function(req, res) {
     });
 });
 
-// Admin: List Orders
-app.get('/list-orders', function(req, res) {
-    var sql = "SELECT * FROM orders ORDER BY created_at DESC";
-    conn.query(sql, function(err, results) {
-        if (err) throw err;
-        res.render('listOrders', { orders: results, user: req.session.userEmail });
-    });
-});
 
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/')
-    });
 
 app.listen(3001);
 console.log('Node app is running on port 3001');
