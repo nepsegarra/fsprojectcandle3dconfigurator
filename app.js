@@ -53,12 +53,35 @@ app.get('/register', function(req, res) {
 });
 
 // Admin: List Orders
-app.get('/list-orders', function(req, res) {
-    var sql = "SELECT * FROM orders ORDER BY created_at DESC";
+app.get('/list-Orders', function(req, res) {
+    // Basic Security: If not the admin, kick them back to the welcome page
+    if (req.session.userEmail !== 'admin@squaregift.com') {
+        return res.redirect('/');
+    }
+
+    var sql = "SELECT * FROM orders ORDER BY id DESC";
     conn.query(sql, function(err, results) {
         if (err) throw err;
-        res.render('listOrders', { orders: results, user: req.session.userEmail });
+        
+        // This renders the file named views/listOrders.ejs
+        res.render('listOrders.ejs', { 
+            orders: results, 
+            user: req.session.userEmail 
+        });
     });
+});
+
+// Admin: List Orders
+//app.get('/list-orders', function(req, res) {
+//    var sql = "SELECT * FROM orders ORDER BY created_at DESC";
+//    conn.query(sql, function(err, results) {
+//        if (err) throw err;
+//        res.render('listOrders', { orders: results, user: req.session.userEmail });
+//    });
+//});
+
+app.get('/reset-password', function(req, res) {
+    res.render('reset-password.ejs', { user: req.session.userEmail, error: null });
 });
 
 app.get('/logout', (req, res) => {
@@ -114,7 +137,31 @@ app.post('/save-order', function(req, res) {
     });
 });
 
+// Update Password
+app.post('/update-password', function(req, res) {
+    var email = req.body.email;
+    var newPassword = req.body.password;
+    var confirmPassword = req.body.confirmPassword;
 
+    // Check if passwords match
+    if (newPassword !== confirmPassword) {
+        return res.render('reset-password.ejs', { user: req.session.userEmail, error: "Passwords do not match!" });
+    }
+
+    // Update the user in the database
+    var sql = "UPDATE users SET password = ? WHERE email = ?";
+    conn.query(sql, [newPassword, email], function(err, result) {
+        if (err) throw err;
+
+        if (result.affectedRows === 0) {
+            // No user found with that email
+            res.render('reset-password', { user: req.session.userEmail, error: "Email not found in our records." });
+        } else {
+            // Success! Send them to login
+            res.send("<script>alert('Password updated successfully!'); window.location='/login';</script>");
+        }
+    });
+});
 
 app.listen(3001);
 console.log('Node app is running on port 3001');
