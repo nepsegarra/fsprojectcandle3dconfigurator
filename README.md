@@ -9,6 +9,7 @@ Frontend: Three.js (WebGL), Bootstrap 5, EJS
 Backend: Node.js, Express.js
 Database: MySQL
 Authentication: Express-Session
+
 🛠️ Setup
 Clone the repo: git clone https://github.com/nepsegarra/fsprojectcandle3dconfigurator.git
 Install dependencies: npm install
